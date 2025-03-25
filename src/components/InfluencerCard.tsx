@@ -1,5 +1,4 @@
 
-import { motion } from "framer-motion";
 import { Influencer } from "@/lib/data";
 import { BadgeCheck, Star, MapPin, Users } from "lucide-react";
 
@@ -8,7 +7,7 @@ interface InfluencerCardProps {
   index: number;
 }
 
-const InfluencerCard = ({ influencer, index }: InfluencerCardProps) => {
+const InfluencerCard = ({ influencer }: InfluencerCardProps) => {
   const formatFollowers = (num: number) => {
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + 'M';
@@ -18,18 +17,8 @@ const InfluencerCard = ({ influencer, index }: InfluencerCardProps) => {
     return num.toString();
   };
   
-  // Staggered animation delay based on index
-  const animationDelay = (index % 12) * 0.05;
-  
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: animationDelay, ease: "easeOut" }}
-      whileHover={{ y: -5 }}
-      className="relative bg-white rounded-xl shadow-sm overflow-hidden border border-border 
-                hover:shadow-md hover:border-primary/20 transition-all duration-300"
-    >
+    <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-border">
       <div className="aspect-[4/3] bg-secondary relative overflow-hidden">
         <img
           src={influencer.avatar}
@@ -74,15 +63,8 @@ const InfluencerCard = ({ influencer, index }: InfluencerCardProps) => {
         </div>
         
         <p className="text-sm text-muted-foreground line-clamp-2">{influencer.bio}</p>
-        
-        <div className="pt-2">
-          <button className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium
-                           hover:bg-primary/90 transition-colors">
-            View Profile
-          </button>
-        </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

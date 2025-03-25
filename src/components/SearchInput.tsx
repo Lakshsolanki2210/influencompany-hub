@@ -40,7 +40,7 @@ const SearchInput = ({
         type="text"
         value={searchValue}
         onChange={handleChange}
-        className="w-full pl-10 pr-10 py-2 border border-input bg-background rounded-full 
+        className="w-full pl-10 pr-10 py-2 border border-input bg-background rounded-md
                  focus:ring-2 focus:ring-primary/20 focus:border-primary 
                  placeholder:text-muted-foreground text-sm transition-all"
         placeholder={placeholder}

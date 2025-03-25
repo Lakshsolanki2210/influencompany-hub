@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Filter, ChevronDown, ChevronUp } from "lucide-react";
 
 interface FilterOption {
@@ -47,11 +46,10 @@ const FilterBar = ({
             <button
               key={option.id}
               onClick={() => onFilterChange(filterType, option.id)}
-              className={`filter-chip ${
-                activeFilters[filterType] === option.id
-                  ? "filter-chip-active"
-                  : "filter-chip-inactive"
-              }`}
+              className={`px-3 py-1 text-xs rounded-full border transition-colors
+                ${activeFilters[filterType] === option.id
+                  ? "bg-primary/10 text-primary border-primary/30"
+                  : "bg-background text-muted-foreground border-muted hover:bg-secondary"}`}
             >
               {option.label}
             </button>
@@ -62,7 +60,7 @@ const FilterBar = ({
   };
 
   return (
-    <div className={`w-full ${className}`}>
+    <div className={`w-full border rounded-lg p-4 ${className}`}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2 text-foreground">
           <Filter className="h-4 w-4" />
@@ -110,19 +108,6 @@ const FilterBar = ({
           
           return null;
         })}
-        
-        {/* Expandable section wrapper if there are more than one filter type */}
-        {Object.keys(options).length > 1 && isExpanded && (
-          <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-6"
-          >
-            {/* We now render filters dynamically above, so this container is just for animation */}
-          </motion.div>
-        )}
       </div>
     </div>
   );
