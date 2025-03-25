@@ -10,8 +10,6 @@ interface FilterOption {
 
 interface FilterBarProps {
   options: {
-    category: FilterOption[];
-    location: FilterOption[];
     [key: string]: FilterOption[];
   };
   activeFilters: Record<string, string>;
@@ -35,26 +33,33 @@ const FilterBar = ({
     title: string,
     filterType: string,
     options: FilterOption[]
-  ) => (
-    <div className="space-y-2">
-      <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
-      <div className="flex flex-wrap gap-2">
-        {options.map((option) => (
-          <button
-            key={option.id}
-            onClick={() => onFilterChange(filterType, option.id)}
-            className={`filter-chip ${
-              activeFilters[filterType] === option.id
-                ? "filter-chip-active"
-                : "filter-chip-inactive"
-            }`}
-          >
-            {option.label}
-          </button>
-        ))}
+  ) => {
+    // Add a safety check to ensure options is defined
+    if (!options || !Array.isArray(options)) {
+      return null;
+    }
+    
+    return (
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
+        <div className="flex flex-wrap gap-2">
+          {options.map((option) => (
+            <button
+              key={option.id}
+              onClick={() => onFilterChange(filterType, option.id)}
+              className={`filter-chip ${
+                activeFilters[filterType] === option.id
+                  ? "filter-chip-active"
+                  : "filter-chip-inactive"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className={`w-full ${className}`}>
@@ -82,21 +87,40 @@ const FilterBar = ({
       </div>
       
       <div className="space-y-6">
-        {/* Always visible filters */}
-        {renderFilterGroup("Category", "category", options.category)}
+        {/* Dynamically render filter groups based on available options */}
+        {Object.entries(options).map(([filterType, filterOptions]) => {
+          // Skip rendering if options array is empty
+          if (!filterOptions || filterOptions.length === 0) {
+            return null;
+          }
+          
+          // Format the title (convert camelCase to Title Case)
+          const title = filterType
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, str => str.toUpperCase());
+          
+          // For the first item or when not expanded, render immediately
+          if (filterType === Object.keys(options)[0] || isExpanded) {
+            return (
+              <div key={filterType} className={filterType !== Object.keys(options)[0] && isExpanded ? "pt-2" : ""}>
+                {renderFilterGroup(title, filterType, filterOptions)}
+              </div>
+            );
+          }
+          
+          return null;
+        })}
         
-        {/* Expandable filters */}
-        {isExpanded && (
+        {/* Expandable section wrapper if there are more than one filter type */}
+        {Object.keys(options).length > 1 && isExpanded && (
           <motion.div 
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="space-y-6 pt-2"
+            className="space-y-6"
           >
-            {renderFilterGroup("Location", "location", options.location)}
-            {options.size && renderFilterGroup("Company Size", "size", options.size)}
-            {options.industry && renderFilterGroup("Industry", "industry", options.industry)}
+            {/* We now render filters dynamically above, so this container is just for animation */}
           </motion.div>
         )}
       </div>
